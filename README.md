@@ -13,3 +13,13 @@
 ## নোট
 
 [^১]: [এই অংশটি এখান থেকে নেয়া](https://doc.rust-lang.org/stable/book/foreword.html)
+
+## লোকালি বইটি পড়তে হলে যা যা করতে হবে:
+
+প্রথমেই `mdbook` ইনস্টল করতে হবে। তারপর নিচের কমান্ডগুলো চালাতে হবে।
+
+```sh
+git clone https://github.com/mdgaziur/rust-in-bangla
+cd rust-in-bangla
+mdbook serve
+```
