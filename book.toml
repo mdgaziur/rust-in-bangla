@@ -1,7 +1,7 @@
 [book]
-authors = ["mdgaziur"]
-language = "en"
-multilingual = false
+authors = ["MD Gaziur Rahman Noor"]
+language = "bn"
+multilingual = true
 src = "src"
 title = "রাস্ট দিয়ে প্রোগ্রামিং"
 
