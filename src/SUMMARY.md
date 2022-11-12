@@ -4,3 +4,6 @@
 [এই বই যাদের জন্য](./for_who.md)
 
 - [দীর্ঘ এক পথচলার আরম্ভ](./getting_started.md)
+  - [ইনস্টলেশন](./getting_started%20-%20installation.md)
+  - [Hello World](./getting_started%20-%20hello_world.md)
+  - [Cargo](./getting_started%20-%20cargo.md)
