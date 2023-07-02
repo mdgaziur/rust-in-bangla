@@ -5,8 +5,10 @@
         <meta charset="UTF-8">
         <title>রাস্ট দিয়ে প্রোগ্রামিং</title>
         <meta name="robots" content="noindex" />
+
+
         <!-- Custom HTML head -->
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
@@ -17,27 +19,31 @@
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
         <link rel="stylesheet" href="css/print.css" media="print">
+
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link rel="stylesheet" href="fonts/fonts.css">
+
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+
         <!-- MathJax -->
-        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -53,7 +59,7 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
@@ -65,12 +71,14 @@
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
+        <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -78,16 +86,38 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">ভূমিকা</a></li><li class="chapter-item expanded affix "><a href="for_who.html">এই বই যাদের জন্য</a></li><li class="chapter-item expanded "><a href="getting_started.html"><strong aria-hidden="true">1.</strong> দীর্ঘ এক পথচলার আরম্ভ</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting_started - installation.html"><strong aria-hidden="true">1.1.</strong> ইনস্টলেশন</a></li><li class="chapter-item expanded "><a href="getting_started - hello_world.html"><strong aria-hidden="true">1.2.</strong> Hello World</a></li><li class="chapter-item expanded "><a href="getting_started - cargo.html"><strong aria-hidden="true">1.3.</strong> Cargo</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">ভূমিকা</a></li><li class="chapter-item expanded affix "><a href="for_who.html">এই বই যাদের জন্য</a></li><li class="chapter-item expanded "><a href="getting_started.html"><strong aria-hidden="true">1.</strong> দীর্ঘ এক পথচলার আরম্ভ</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting_started - installation.html"><strong aria-hidden="true">1.1.</strong> ইনস্টলেশন</a></li><li class="chapter-item expanded "><a href="getting_started - hello_world.html"><strong aria-hidden="true">1.2.</strong> Hello World</a></li><li class="chapter-item expanded "><a href="getting_started - cargo.html"><strong aria-hidden="true">1.3.</strong> Cargo</a></li></ol></li><li class="chapter-item expanded "><a href="basic_syntax.html"><strong aria-hidden="true">2.</strong> সিনট্যাক্সের খুটিনাটি</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="basic_syntax - rust_program.html"><strong aria-hidden="true">2.1.</strong> রাস্ট প্রোগ্রাম এর গঠন</a></li><li class="chapter-item expanded "><a href="basic_syntax - function.html"><strong aria-hidden="true">2.2.</strong> ফাংশন</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -96,7 +126,7 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -113,6 +143,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+
                     </div>
                 </div>
 
@@ -126,8 +157,9 @@
                         </ul>
                     </div>
                 </div>
+
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -169,6 +201,14 @@
 <li>রাস্ট দিয়ে <code>Hello World</code></li>
 <li>রাস্টের প্যাকেজ ম্যানাজার <code>Cargo</code> দিয়ে প্রথম প্যাকেজ তৈরি করা</li>
 </ul>
+<h2 id="এই-বই-পড়ার-জনয-কিছু-নিরদেশনা"><a class="header" href="#এই-বই-পড়ার-জনয-কিছু-নিরদেশনা">এই বই পড়ার জন্য কিছু নির্দেশনা</a></h2>
+<p>বইয়ের কোড সরাসরি রান করতে চাইলে কোড এর পাশে রান বাটনে ক্লিক করতে হবে। এতে কোড রান করার পর নিচে আউটপুট আসবে।</p>
+<p><img src="./images/run-code-1.png" alt="Highlighting run button" /></p>
+<p>রান করার পর এটির ঠিক নিচে আউটপুট আসবে:</p>
+<p><img src="./images/run-code-2.png" alt="Code output" /></p>
+<p>আর, রাস্টে প্রোগ্রামিং করার সময় সবচেয়ে বড় সহায়ক হচ্ছে রাস্ট কম্পাইলার এর এরর মেসেজ। রাস্ট এর কম্পাইলার খুব সুন্দরভাবে এরর
+মেসেজ দেখায় যেখানে সেটি প্রোগ্রামার এর ভুল ধরে দেয়, সেগুলোর ব্যাখ্যা দেয় এবং সম্ভব হলে তা কিভাবে ঠিক করতে হবে সেটাও দেখিয়ে দেয়।
+তাই কোড কম্পাইল না হলে ঘাবড়ে না গিয়ে মনোযোগ দিয়ে এরর কোড পড়তে হবে।</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="রাসট-ইনসটলেশন"><a class="header" href="#রাসট-ইনসটলেশন">রাস্ট ইনস্টলেশন</a></h1>
 <h2 id="লিনাকসমযাক-ওএস"><a class="header" href="#লিনাকসমযাক-ওএস">লিনাক্স/ম্যাক ওএস</a></h2>
 <p>প্রথমেই আমরা <a href="https://rustup.rs">https://rustup.rs</a> এ ঢুকবো। এরপর আমরা সেখানে দেয়া কোড কপি
@@ -189,8 +229,7 @@
 <p>পছন্দের কোনো একটা এডিটর এ <code>hello.rs</code> নামে একটা ফাইল তৈরি করে নিচের কোডটি তুলে সেইভ করুন।</p>
 <pre><pre class="playground"><code class="language-rust">fn main() {
     println!(&quot;Hello World!&quot;);
-}
-</code></pre></pre>
+}</code></pre></pre>
 <p>এবার টারমিনাল এ গিয়ে যে ফোল্ডারে ফাইলটি সেইভ করা হয়েছে তার মধ্যে গিয়ে নিচের কমান্ডটি রান করুন।</p>
 <pre><code class="language-bash">rustc hello.rs
 </code></pre>
@@ -200,21 +239,18 @@
 <h2 id="এতকষণ-আমরা-কি-করলাম"><a class="header" href="#এতকষণ-আমরা-কি-করলাম">এতক্ষণ আমরা কি করলাম?</a></h2>
 <p>আমরা প্রথমে <code>hello.rs</code> নামে একটা ফাইল বানালাম। এখানে লক্ষ্য করলে দেখা যাবে যে, <code>.rs</code> হচ্ছে রাস্ট কোড এর extension.</p>
 <p>এরপর আমরা আমাদের কোড লেখলাম আর সেভ করলাম। কোড এর প্রথম লাইনটা একটু দেখি:</p>
-<pre><pre class="playground"><code class="language-rust">fn main() {
-</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {</code></pre></pre>
 <p>এখানে আমরা <code>fn</code> দিয়ে ফাংশন ডেক্লারেশন করছি। সি এর মতো রাস্টেও কোড এক্সিকিউট হয় <code>main</code> ফাংশন থেকে। তারপর আমরা নরমালি <code>()</code> এর ভিতর কিছু না দিয়ে বুঝাচ্ছি যে আমাদের ফাংশন কোনো আর্গুমেন্ট নেয় না। এরপর আমরা
 বন্ধনী দিয়ে আমাদের ফাংশন এর বডি শুরু করলাম।</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>    println!(&quot;Hello World!&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>এখানে লক্ষ্য করলে দেখা যাবে আমরা <code>println</code> এর পর একটা exclamation mark দিয়েছি। কারণ এটা কোনো ফাংশন না, বরং একটা ম্যাক্রো। আপাতত এটাকে ফাংশন ধরলেই চলবে। পরে আমরা ম্যাক্রো নিয়ে আলোচনা করবো। তো, এই ফাংশনকে আমরা <code>&quot;Hello World!&quot;</code> দিয়েছি। তারপর স্টেটমেন্ট শেষ করেছি সেমিকোলন দিয়ে।</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>}
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>সবশেষে আমরা বন্ধনী দিয়ে ফাংশন এর বডি ক্লোজ করেছি।</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cargo"><a class="header" href="#cargo">Cargo</a></h1>
 <p>কার্গো হচ্ছে রাস্ট এর অফিসিয়াল প্যাকেজ ম্যানাজার। এটার মাধ্যমে আমরা আমাদের প্রজেক্ট নিয়ে কাজ করবো। এটা দিয়ে বাইনারি কিংবা লাইব্রেরী তৈরি করা যায়। তো, আমরা এবার একটা বাইনারি প্যাকেজ তৈরি করে দেখবো আর এটা কিভাবে রান করতে হয় তা দেখবো।</p>
@@ -240,38 +276,161 @@ edition = &quot;2021&quot;
 <pre><code class="language-sh">cargo run --release
 </code></pre>
 <p>এবার দেখি আমাদের প্রোগ্রাম কোথায় থাকে সেটা দেখতে। কম্পাইল যদি ডিবাগ মোডে করি তাহলে তা থাকবে <code>target/debug/cargo_hello_world</code> এ। আর রিলিজ মোডে থাকবে <code>target/release/cargo_hello_world</code> এ। উইন্ডোজ এর ক্ষেত্রে এদের সাথে <code>.exe</code> থাকবে।</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="সিনটযাকসের-খুটিনাটি"><a class="header" href="#সিনটযাকসের-খুটিনাটি">সিনট্যাক্সের খুটিনাটি</a></h1>
+<p>আগের অংশে আমরা দেখেছিলাম কিভাবে আমরা রাস্ট এর কম্পাইলার ইন্সটল করবো এবং রাস্টে <code>Hello World</code> এর প্রোগ্রাম লিখেছিলাম। তাছাড়াও আমরা
+দেখেছিলাম কিভাবে কার্গো ব্যবহার করে আমরা <code>Crate</code> বানাতে পারি। এই অংশে আমরা রাস্টের কিছু বেসিক সিনট্যাক্স শিখবো। </p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="রাসট-পরোগরাম-এর-গঠন"><a class="header" href="#রাসট-পরোগরাম-এর-গঠন">রাস্ট প্রোগ্রাম এর গঠন</a></h1>
+<p>আমরা আগের <code>Hello World</code> প্রোগ্রামে ফিরে যাই:</p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    println!(&quot;Hello World!&quot;);
+}</code></pre></pre>
+<p>আগেই বলেছিলাম যে আমরা একটা &quot;বাইনারি&quot; প্রোগ্রাম বানিয়েছিলাম। তো, <code>C</code> আর <code>C++‍</code> এর মতো রাস্টের বাইনারিতে <code>main</code> ফাংশন থেকে কোড
+রান করা শুরু হয়। তবে, ওই ল্যাঙ্গুয়েজগুলোর মতো এখানে Command line argument নিতে ফাংশনে কোনো আর্গুমেন্ট নিতে হয় না। Command line
+arguments নিয়ে পরে বিস্তারিত জানবো আমরা।</p>
+<p>এখন, এই ফাংশনে আমরা আমাদের ইচ্ছামতো কোড লিখতে পারি। যেমন, আমরা চাইলে দুটি সংখ্যা যোগ করে দেখাতে পারি:</p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    println!(&quot;2 + 2 = {}&quot;, 2 + 2);
+}</code></pre></pre>
+<p>আমরা <code>println!</code> কে একটি ফরম্যাট স্ট্রিং পাঠিয়েছি আর <code>{}</code> দিয়ে দেখিয়েছি কোথায় আমাদের আউটপুট দেখাতে হবে।</p>
+<p>এখন, প্রত্যেকটা ফাংশনের বডিতে এক বা একাধিক <code>Expression</code> আর <code>Statement</code> থাকতে পারে। Expression হচ্ছে সেইসব কোড যেগুলা থেকে
+কোনো মান পাওয়া যায়। আর statement হলো সেইসব কোড যেগুলো থেকে কোনো মান পাওয়া যায় না। যেমন: <code>1 + 2</code> একটি expression এবং
+‍<code>return 1</code> হচ্ছে একটি ‍statement। কারণ, <code>1 + 2</code> থেকে আমরা <code>3</code> কে পাই। কিন্তু <code>return 1</code> আমাদেরকে <code>()</code> দেয়। এখন, বিশেষ কিছু
+ক্ষেত্র ছাড়া সবসময় expression এর পরে সেমিকোলন <code>;</code> দিতে হয়। পরের অংশে আমরা এটা নিয়ে বিস্তারিত জানবো।</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ফাংশন"><a class="header" href="#ফাংশন">ফাংশন</a></h1>
+<p>রাস্টে ফাংশন ডিক্লেয়ার করে ‍<code>fn‍‍‍</code> keyword দিয়ে। <code>fn</code> এর পরে ফাংশন এর নাম দিতে হয়। এরপর <code>(</code> এর ভিতরে
+ফাংশনের যদি আর্গুমেন্ট লাগে তাহলে টাইপসহ এগুলোর নাম লিখতে হয় অনেকটা এরকমভাবেঃ <code>name: type</code>. এরপর ‍<code>)</code>
+দিতে হয়। তারপর, ফাংশন যদি কোনো কিছু রিটার্ন করে তাহলে সেজন্য <code>-&gt;</code> দিয়ে রিটার্ন টাইপটি লিখতে হয়। যেমন, যদি কোনো
+ফাংশন <code>String</code> রিটার্ন করে তবে এটা দেখতে হবে এরকম: <code>-&gt; String</code>. এরপর, ‍<code>{</code> দিয়ে ফাংশন বডি শুরু করতে হয়
+এবং <code>}</code> দিয়ে ফাংশন বডি শেষ হয়।</p>
+<p>অনেক কথা হলো, এবার আসল কাজে আসা যাক। প্রথমে আমরা একটি ফাংশন লিখবো যেটা শুধু আমাদের জানায় যে তাকে কল করা
+হয়েছে:</p>
+<pre><pre class="playground"><code class="language-rust">fn call_me() {
+    println!(&quot;Hello, I'm `call_me`. You've just called me.&quot;);    
+}
+
+fn main() {
+    call_me();
+}</code></pre></pre>
+<p>এবার আরেকটু ইন্টারেস্টিং করা যাক ফাংশনটাকে, আমরা এটাতে আমাদের নাম পাঠাবো। রাস্টে <code>String</code> নামে একটি টাইপ আছে
+যার কাজ হচ্ছে Text রাখা। তাহলে, আমরা এই টাইপকে আমাদের আর্গুমেন্ট হিসেবে ব্যবহার করবো।</p>
+<pre><pre class="playground"><code class="language-rust">fn call_me(name: String) {
+    println!(&quot;Hello {}! I'm `call me`. You've just called me.&quot;, name);
+}
+
+fn main() {
+    call_me(&quot;Noor&quot;);
+}</code></pre></pre>
+<p>সমস্যা হচ্ছে, আমরা এটা রান করলে নিচের এরর পাবো:</p>
+<pre><code class="language-error">error[E0308]: mismatched types
+ --&gt; src/main.rs:6:13
+  |
+6 |     call_me(&quot;Noor&quot;);
+  |     ------- ^^^^^^- help: try using a conversion method: `.to_string()`
+  |     |       |
+  |     |       expected `String`, found `&amp;str`
+  |     arguments to this function are incorrect
+  |
+note: function defined here
+ --&gt; src/main.rs:1:4
+  |
+1 | fn call_me(name: String) {
+  |    ^^^^^^^ ------------
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `hello_world` (bin &quot;hello_world&quot;) due to previous error
+</code></pre>
+<p>রাস্ট কম্পাইলার এর একটা ভালো বৈশিষ্ট্য হচ্ছে এটি খুব সুন্দরভাবে আপনার ভুল ধরে দিবে আর কি ভুল করেছেন তা ধরে দিবে। রাস্টে অনেক ধরণের
+স্ট্রিং টাইপ আছে। এর মধ্যে সবচেয়ে ব্যবহৃত হয় <code>&amp;str</code> আর <code>String</code>. এখন, যখন আমরা সরাসরি <code>&quot;Hello World&quot;</code> লিখি, সেটার টাইপ
+হচ্ছে <code>&amp;str</code>. এটি মুলত কোনো স্ট্রিং এর রেফারেন্স বুঝায়। এই স্ট্রিং stack allocated কিংবা heap allocated হতে পারে। আর <code>String</code> টাইপ
+শুধু heap allocated স্ট্রিং বুঝায়। তাছাড়া এগুলোর মধ্যে ‍<code>Ownership</code> এরও পার্থক্য আছে। আমরা এটা নিয়ে পরে দেখবো। যাইহোক, কম্পাইলার বলছে
+আমরা <code>&amp;str</code> এর <code>to_string</code> ফাংশন কল করে সেটিকে <code>String</code> এ রূপান্তর করবে। তাহলে আমরা সেটিই করি:</p>
+<pre><pre class="playground"><code class="language-rust">fn call_me(name: String) {
+    println!(&quot;Hello {}! I'm `call me`. You've just called me.&quot;, name);
+}
+
+fn main() {
+    call_me(&quot;Noor&quot;.to_string();
+}</code></pre></pre>
+<p>এবার এটারকে রান করলে আমরা কাঙ্খিত ফলাফল পাবো। যাইহোক, এখন আমরা আরেকটা ফাংশন লিখবো যেটি দুটি সংখ্যা যোগ করে সেগুলোর যোগফল প্রদর্শন করে।
+রাস্টে সংখ্যার জন্য অনেক অনেক ধরণের টাইপ আছে। সব টাইপ নিয়ে আপাতত আমরা মাথা ঘামাবো না। আমরা সংখ্যার জন্য <code>i64</code> টাইপ ব্যবহার করবো। এই টাইপের
+বৈশিষ্ট্য হচ্ছে, এটি 64bit এর সংখ্যা রাখতে পারে আর তার সাথে সংখ্যাটি ঋণাত্মকও হতে পারে। তাহলে, আমরা দুটি আর্গুমেন্ট নিবো ‍<code>a</code> এবং <code>b</code> যেগুলোর টাইপ হবে
+‍<code>i64</code>. আমাদের ফাংশন এর রাখবো ‍<code>add</code>. তাহলে কোড নিচের মতো হবে:</p>
+<pre><pre class="playground"><code class="language-rust">fn add(a: i64, b: i64) {
+    println!(&quot;{} + {} = {}&quot;, a, b, a + b);
+}
+
+fn main() {
+    add(1, 2);
+    add(420, 69);
+}</code></pre></pre>
+<p>এখন, আমরা যদি চাই যোগফল রিটার্ন নিতে চাই ফাংশন থেকে, সেক্ষেত্রে আমরা ফাংশনটিকে নিচের মতো লিখতে পারি:</p>
+<pre><pre class="playground"><code class="language-rust">fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}
+
+fn main() {
+    println!(&quot;{} + {} = {}&quot;, 1, 2, add(1, 2));
+    println!(&quot;{} + {} = {}&quot;, 420, 69, add(420, 69));
+}</code></pre></pre>
+<p>চাইলে আমরা কোডটিকে আরো সুন্দর আর <a href="https://www.merriam-webster.com/dictionary/idiomatic">idiomatic</a> ভাবে লিখতে পারি:</p>
+<pre><pre class="playground"><code class="language-rust">fn add(a: i64, b: i64) -&gt; i64 {
+    a + b
+}
+
+fn main() {
+    println!(&quot;{} + {} = {}&quot;, 1, 2, add(1, 2));
+    println!(&quot;{} + {} = {}&quot;, 420, 69, add(420, 69));
+}</code></pre></pre>
+<p>এখানে রাস্টের একটা চমৎকার একটি ফিচার আমরা ব্যবহার করেছি। সেটি হচ্ছে, কোনো কোড ব্লক এর শেষের expression এর পরে সেমিকোলন না থাকে, তবে
+কোড ব্লক এর কোড রান করার পর সেই ভ্যালু পাওয়া যায়। <code>{</code> আর <code>}</code> এর মধ্যে কোড লিখলে সেট হচ্ছে একটা কোড ব্লক। ফাংশন এর রিটার্ন ভ্যালু হয় কোড
+ব্লক এর ভ্যালুটি। আমরা এখন থেকে খুব বেশি প্রয়োজন না হলে <code>return</code> ব্যবহার করবো না। কখন রিটার্ন ব্যবহার করতে হবে আর কখন করতে হবে না সেটা
+আমি পরের চ্যাপ্টারগুলোতে দেখাবো।</p>
+<p>এই ছিলো ফাংশন নিয়ে বেসিক আলোচনা। এখন পাঠকদের কাছে আমি একট বাড়ির কাজ দিবো। সেটা হচ্ছে, তিনটি সংখ্যার গড় বের করার প্রোগ্রাম লিখা।
+এর জন্য একটি হিন্ট দিচ্ছি: রাস্টে 64-bit ফ্লোটিং পয়েন্ট সংখ্যার জন্য টাইপ হচ্ছে <code>f64</code>. </p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+
+
                         <div style="clear: both"></div>
                     </nav>
                 </div>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
             </nav>
 
         </div>
 
-        <script type="text/javascript">
+
+
+
+        <script>
             window.playground_copyable = true;
         </script>
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script type="text/javascript">
+
+        <script>
         window.addEventListener('load', function() {
             MathJax.Hub.Register.StartupHook('End', function() {
                 window.setTimeout(window.print, 100);
             });
         });
         </script>
+
+    </div>
     </body>
 </html>
